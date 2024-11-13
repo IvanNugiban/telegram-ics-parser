@@ -1,7 +1,7 @@
 from icalendar import Calendar
 import recurring_ical_events
 import datetime
-from src.constants import TABLE_WIDTH, TABLE_HEIGHT, MAX_SYMBOLS
+from src.constants import TABLE_WIDTH, TABLE_HEIGHT
 from src.scheduler import Scheduler
 
 def index_to_color(index):
@@ -23,17 +23,35 @@ def event_to_rows(event_start, event_end, rows):
     end_row = time_to_row(event_end, rows)
     return start_row, end_row
 
-def clamp_text(text):
-    if len(text) > MAX_SYMBOLS:
-        return text[:MAX_SYMBOLS] + "..."
+def col_num_to_symbols(col_num):
+    if col_num == 1:
+        return 200
+    if col_num == 2:
+        return 100
+    if col_num == 3:
+        return 55
+    if col_num == 4:
+        return 35
+    if col_num == 5:
+        return 25
+    if col_num == 6:
+        return 20
+
+def clamp_text(text, max_symbols):
+    if len(text) > max_symbols:
+        return text[:max_symbols] + "..."
     return text
+
+def event_duration(start_time: datetime, end_time: datetime) -> float:
+    duration = end_time - start_time
+    return duration.total_seconds() / 60
 
 def main():
 
     columns = [
         {"file": "C:/Users/Ivan/Downloads/Plany.ics", "name": "Ivan"},
-        {"file": "C:/Users/Ivan/Downloads/kolya.ics", "name": "Mykola"},
-        {"file": "C:/Users/Ivan/Downloads/valeria.ics", "name": "Valera"},
+        {"file": "C:/Users/Ivan/Downloads/valeria.ics", "name": "Valeria"},
+        {"file": "C:/Users/Ivan/Downloads/maria.ics", "name": "Maria"},
     ]
 
     if len(columns) == 0:
@@ -52,22 +70,23 @@ def main():
     events = {}
 
     for table in columns:
+
+        name = table['name']
+
+        if name not in events:
+            events[name] = []
+
         # Collect all events for tomorrow
         for event in recurring_ical_events.of(table['file']).at(tomorrow):
             event_summary = event.get("summary")
             event_start = event.get("dtstart").dt
             event_end = event.get("dtend").dt
 
-            name = table['name']
-
-            if name not in events:
-                events[name] = []
-
             events[name].append({
                 "start" : event_start,
                 "end" : event_end,
                 'from_to': f"{event_start.strftime('%H:%M')} - {event_end.strftime('%H:%M')}",
-                "text" : clamp_text(event_summary)
+                "text" : clamp_text(event_summary, col_num_to_symbols(len(columns)))
             })
 
     # Rows  (first row  is empty)
@@ -93,7 +112,9 @@ def main():
                                  align_x='left', align_y='top',
                                  start_row_multiplier=start_row[1], end_row_multiplier=end_row[1])
 
-            scheduler.write_text(index + 1, start_row[0], end_row[0],
+            # Don't print time for events shorter than 1 hour
+            if event_duration(event['start'], event['end']) > 60:
+                scheduler.write_text(index + 1, start_row[0], end_row[0],
                                  event['from_to'], color='white', font_size=12, font="ariblk.ttf",
                                  align_x='left', align_y='center',
                                  start_row_multiplier=start_row[1], end_row_multiplier=end_row[1])

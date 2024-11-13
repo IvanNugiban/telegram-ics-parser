@@ -1,7 +1,6 @@
 from typing import Optional
 from PIL import Image, ImageDraw, ImageFont
 from PIL.ImageDraw import ImageDraw as ImageDrawType
-from aiohttp.web_routedef import static
 
 from src.constants import FIRST_COL_WIDTH, TABLE_PADDING
 
