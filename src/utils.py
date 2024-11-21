@@ -53,3 +53,11 @@ def is_valid_time_format(time_str):
         return True
     except ValueError:
         return False
+
+def format_date_plus_days(days):
+    # Get today's date
+    today = datetime.datetime.now()
+    # Add the specified number of days
+    future_date = today + datetime.timedelta(days=days)
+    # Format the date as "DD.MM.YYYY"
+    return future_date.strftime("%d.%m.%Y")

@@ -12,7 +12,8 @@ from src.utils import (
     event_to_rows,
     event_duration,
     remove_file,
-    is_valid_time_format)
+    is_valid_time_format,
+    format_date_plus_days)
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
@@ -188,7 +189,7 @@ def get_events_for_day(columns, day = 0):
 async def show_table(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     days = int(context.args[0]) if context.args and context.args[0].isdigit() else 0
     if await create_table(update.message.chat_id, context, days):
-        await update.message.reply_photo(open("output.png", "rb"))
+        await update.message.reply_photo(open("output.png", "rb"), caption = "Here's schedule for the " + format_date_plus_days(days))
 
 async def show_files(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     columns = database.get_files(update.message.chat_id)
@@ -252,7 +253,8 @@ async def show_scheduled_table(context: CallbackContext) -> None:
 
         if datetime.datetime.now().hour == hours and datetime.datetime.now().minute == minutes:
             if await create_table(schedule[0], context, int(schedule[2])):
-                await context.bot.send_photo(photo=open("output.png", "rb"), chat_id=schedule[0])
+                await context.bot.send_photo(photo=open("output.png", "rb"), chat_id=schedule[0], caption = "Scheduled message:\n"
+                                                                                                            "Here's schedule for the " + format_date_plus_days(int(schedule[2])))
 
 async def cancel_schedule(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if database.get_schedule(update.message.chat_id):
@@ -262,6 +264,13 @@ async def cancel_schedule(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     else:
         await update.message.reply_text("No schedule found.")
 
+async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    print("ERROR:", context.error)
+
+    if update:
+        await update.message.reply_text(
+            "An unexpected error occurred."
+        )
 
 def main():
 
@@ -283,6 +292,8 @@ def main():
     app.add_handler(CommandHandler("cancel_schedule", cancel_schedule))
 
     app.add_handler(CallbackQueryHandler(remove_callback, pattern='^remove_.*$'))
+
+    app.add_error_handler(error_handler)
 
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('add', start_add)],
