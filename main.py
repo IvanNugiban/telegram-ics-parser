@@ -128,7 +128,7 @@ async def create_table(chat_id, context, days):
     events_exist, events = get_events_for_day(columns, days)
 
     if not events_exist:
-        await context.bot.send_message(chat_id, "No events found for that day.")
+        await context.bot.send_message(chat_id, "No events found for " + format_date_plus_days(days))
         return False
 
     rows = ['', '8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00',
@@ -189,7 +189,7 @@ def get_events_for_day(columns, day = 0):
 async def show_table(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     days = int(context.args[0]) if context.args and context.args[0].isdigit() else 0
     if await create_table(update.message.chat_id, context, days):
-        await update.message.reply_photo(open("output.png", "rb"), caption = "Here's schedule for the " + format_date_plus_days(days))
+        await update.message.reply_photo(open("output.png", "rb"), caption = "Here's schedule for " + format_date_plus_days(days))
 
 async def show_files(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     columns = database.get_files(update.message.chat_id)
@@ -254,7 +254,7 @@ async def show_scheduled_table(context: CallbackContext) -> None:
         if datetime.datetime.now().hour == hours and datetime.datetime.now().minute == minutes:
             if await create_table(schedule[0], context, int(schedule[2])):
                 await context.bot.send_photo(photo=open("output.png", "rb"), chat_id=schedule[0], caption = "Scheduled message:\n"
-                                                                                                            "Here's schedule for the " + format_date_plus_days(int(schedule[2])))
+                                                                                                            "Here's schedule for " + format_date_plus_days(int(schedule[2])))
 
 async def cancel_schedule(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if database.get_schedule(update.message.chat_id):
