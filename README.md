@@ -21,7 +21,7 @@ This project is a Telegram bot that allows users to manage and schedule events u
 1. Clone the repository:
 
     ```sh
-    git clone https://github.com/IvanNugiban/your-repo.git
+    git clone https://github.com/IvanNugiban/telegram-ics-parser
     cd your-repo
     ```
 
@@ -73,4 +73,3 @@ Feel free to submit issues or pull requests if you have any improvements or bug 
 ## License
 
 This project is licensed under the MIT License.
-```
