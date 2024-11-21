@@ -144,13 +144,13 @@ async def create_table(chat_id, context, days):
             start_row, end_row = event_to_rows(event['start'], event['end'])
             scheduler.draw_block(index + 1, start_row[0], end_row[0], index_to_color(index), start_row[1], end_row[1])
             scheduler.write_text(index + 1, start_row[0], end_row[0],
-                                 event['text'], color='white', font_size=12, font="ariblk.ttf",
+                                 event['text'], color='white', font_size=12, font="resources/ariblk.ttf",
                                  align_x='left', align_y='top',
                                  start_row_multiplier=start_row[1], end_row_multiplier=end_row[1])
 
             if event_duration(event['start'], event['end']) > 60:
                 scheduler.write_text(index + 1, start_row[0], end_row[0],
-                                     event['from_to'], color='white', font_size=12, font="ariblk.ttf",
+                                     event['from_to'], color='white', font_size=12, font="resources/ariblk.ttf",
                                      align_x='left', align_y='center',
                                      start_row_multiplier=start_row[1], end_row_multiplier=end_row[1])
 

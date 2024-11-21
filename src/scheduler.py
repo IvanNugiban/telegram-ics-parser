@@ -49,7 +49,7 @@ class Scheduler:
                 self.draw.rectangle([x1, y1, x2, y2], outline="black")
 
     def write_text(self, col, start_row, end_row, text, align_x = 'center', align_y='center',
-                   font_size = 15, color = 'black', font = "arial.ttf", start_row_multiplier = 1, end_row_multiplier = 1):
+                   font_size = 15, color = 'black', font = "resources/arial.ttf", start_row_multiplier = 1, end_row_multiplier = 1):
 
         if not self.cells[start_row][col] or not self.cells[end_row][col]:
             return
