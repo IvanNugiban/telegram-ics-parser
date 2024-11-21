@@ -22,7 +22,7 @@ This project is a Telegram bot that allows users to manage and schedule events u
 
     ```sh
     git clone https://github.com/IvanNugiban/telegram-ics-parser
-    cd your-repo
+    cd telegram-ics-parser
     ```
 
 2. Create a virtual environment and activate it:
