@@ -74,5 +74,3 @@ Feel free to submit issues or pull requests if you have any improvements or bug 
 
 This project is licensed under the MIT License.
 ```
-
-Replace `YOUR_BOT_TOKEN` and `your-repo` with your actual bot token and repository name.
